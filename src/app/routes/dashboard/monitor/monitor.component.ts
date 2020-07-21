@@ -34,7 +34,7 @@ export class DashboardMonitorComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
-    zip(this.http.get('/chart'), this.http.get('/chart/tags')).subscribe(([res, tags]: [any, any]) => {
+    zip(this.http.get('/product/chart'), this.http.get('/product/tags')).subscribe(([res, tags]: [any, any]) => {
       this.data = res;
       tags.list[Math.floor(Math.random() * tags.list.length) + 1].value = 1000;
       this.tags = tags.list;

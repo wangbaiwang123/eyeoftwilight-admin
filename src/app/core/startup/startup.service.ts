@@ -32,6 +32,12 @@ export class StartupService {
   load(): Promise<void> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
+    return new Promise((resolve) => {});
+  }
+
+  loadApp(): Promise<void> {
+    // only works with promises
+    // https://github.com/angular/angular/issues/15088
     return new Promise((resolve) => {
       zip(this.httpClient.get(`/i18n/getLanguageData/${this.i18n.defaultLang}`), this.httpClient.get('/menu/getMenuData'))
         .pipe(

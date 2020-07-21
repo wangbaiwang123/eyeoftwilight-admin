@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponseBase } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { DA_SERVICE_TOKEN, ITokenService, JWTTokenModel } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
 import { environment } from '@env/environment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -103,7 +103,7 @@ export class DefaultInterceptor implements HttpInterceptor {
    * 刷新 Token 请求
    */
   private refreshTokenRequest(): Observable<any> {
-    const model = this.tokenSrv.get();
+    const model = this.tokenSrv.get(JWTTokenModel);
     return this.http.post(`/login/refreshToken`, null, null, { headers: { refresh_token: model.refresh_token || '' } });
   }
 
