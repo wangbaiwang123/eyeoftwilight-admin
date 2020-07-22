@@ -87,7 +87,12 @@ export class DefaultInterceptor implements HttpInterceptor {
         this.refreshToking = false;
         this.refreshToken$.next(res);
         // 重新保存新 token
-        this.tokenSrv.set(res);
+        const user = res.returnInfo.user;
+        user.token = res.returnInfo.token;
+        user.refresh_token = res.returnInfo.refresh_token;
+        user.time = +new Date();
+        this.tokenSrv.set(user);
+        console.log('refreshToken Request: ' + user);
         // 重新发起请求
         return next.handle(this.reAttachToken(req));
       }),
@@ -114,10 +119,11 @@ export class DefaultInterceptor implements HttpInterceptor {
    */
   private reAttachToken(req: HttpRequest<any>): HttpRequest<any> {
     // 以下示例是以 NG-ALAIN 默认使用 `SimpleInterceptor`
-    const token = this.tokenSrv.get().token;
+    const token = this.tokenSrv.get(JWTTokenModel).token;
+    console.log('重新附加新的 Token 信息：' + token);
     return req.clone({
       setHeaders: {
-        token: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }

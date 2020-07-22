@@ -9,6 +9,7 @@ import { catchError } from 'rxjs/operators';
 import { ICONS } from '../../../style-icons';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { I18NService } from '../i18n/i18n.service';
+import { Router } from '@angular/router';
 
 /**
  * 用于应用启动时
@@ -25,6 +26,7 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     private httpClient: HttpClient,
+    private router:Router,
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
@@ -32,9 +34,31 @@ export class StartupService {
   load(): Promise<void> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
-    return new Promise((resolve) => {});
+    return new Promise((resolve) => {
+      zip(this.httpClient.get(`/i18n/getLanguageData/${this.i18n.defaultLang}?_allow_anonymous=true`))
+        .pipe(
+          // 接收其他拦截器后产生的异常消息
+          catchError((res) => {
+            console.warn(`StartupService.load: Network request failed`, res);
+            resolve();
+            return [];
+          }),
+        )
+        .subscribe(
+          ([langData]) => {
+            // setting language data
+            this.translate.setTranslation(this.i18n.defaultLang, JSON.parse(langData.returnInfo));
+            this.translate.setDefaultLang(this.i18n.defaultLang);
+          },
+          () => {},
+          () => {
+            resolve();
+          },
+        );
+    });
   }
 
+/* #region  获取用户应用数据 */
   loadApp(): Promise<void> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
@@ -75,4 +99,5 @@ export class StartupService {
         );
     });
   }
+/* #endregion */
 }
