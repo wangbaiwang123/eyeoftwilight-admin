@@ -1,13 +1,16 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
-import { throwIfAlreadyLoaded } from '@core';
-import { DelonMockModule } from '@delon/mock';
-import { AlainThemeModule } from '@delon/theme';
-import { AlainConfig, ALAIN_CONFIG } from '@delon/util';
+import {ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
+import {throwIfAlreadyLoaded} from '@core';
+import {DelonACLModule} from '@delon/acl';
+import {DelonMockModule} from '@delon/mock';
+import {AlainThemeModule} from '@delon/theme';
+import {ALAIN_CONFIG, AlainConfig} from '@delon/util';
+// mock
+import {environment} from '@env/environment';
+import {NZ_CONFIG, NzConfig} from 'ng-zorro-antd/core/config';
+import * as MOCKDATA from '../../_mock';
 
 // Please refer to: https://ng-alain.com/docs/global-config
 // #region NG-ALAIN Config
-
-import { DelonACLModule } from '@delon/acl';
 
 const alainConfig: AlainConfig = {
   st: { modal: { size: 'lg' } },
@@ -16,15 +19,12 @@ const alainConfig: AlainConfig = {
     license: `A59B099A586B3851E0F0D7FDBF37B603`,
     licenseA: `C94CEE276DB2187AE6B65D56B3FC2848`,
   },
-  auth: { login_url: '/passport/login' },
+  auth: { login_url: '/passport/login', token_exp_offset: -60 },
 };
 
 const alainModules = [AlainThemeModule.forRoot(), DelonACLModule.forRoot(), DelonMockModule.forRoot()];
 const alainProvides = [{ provide: ALAIN_CONFIG, useValue: alainConfig }];
 
-// mock
-import { environment } from '@env/environment';
-import * as MOCKDATA from '../../_mock';
 if (!environment.production) {
   alainConfig.mock = { data: MOCKDATA };
 }
@@ -56,8 +56,6 @@ if (!environment.production) {
 
 // Please refer to: https://ng.ant.design/docs/global-config/en#how-to-use
 // #region NG-ZORRO Config
-
-import { NzConfig, NZ_CONFIG } from 'ng-zorro-antd/core/config';
 
 const ngZorroConfig: NzConfig = {};
 

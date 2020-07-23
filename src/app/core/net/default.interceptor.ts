@@ -80,7 +80,6 @@ export class DefaultInterceptor implements HttpInterceptor {
     // 3、尝试调用刷新 Token
     this.refreshToking = true;
     this.refreshToken$.next(null);
-
     return this.refreshTokenRequest().pipe(
       switchMap((res) => {
         // 通知后续请求继续执行
